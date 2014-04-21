@@ -299,7 +299,7 @@ public abstract class AbstractScheduledService implements Service {
       }
       @Override public void failed(State from, Throwable failure) {
         executor.shutdown();
-      }}, MoreExecutors.sameThreadExecutor());
+      }}, MoreExecutors.plainSameThreadExecutor());
     return executor;
   }
 

@@ -704,7 +704,7 @@ public final class MoreExecutors {
       @Override public void run() {
         queue.add(future);
       }
-    }, MoreExecutors.sameThreadExecutor());
+    }, MoreExecutors.plainSameThreadExecutor());
     return future;
   }
 

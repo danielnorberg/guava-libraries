@@ -202,7 +202,7 @@ public final class ServiceManager {
     this.services = copy;
     WeakReference<ServiceManagerState> stateReference = 
         new WeakReference<ServiceManagerState>(state);
-    Executor sameThreadExecutor = MoreExecutors.sameThreadExecutor();
+    Executor sameThreadExecutor = MoreExecutors.plainSameThreadExecutor();
     for (Service service : copy) {
       // We give each listener its own SynchronizedExecutor to ensure that the state transitions
       // are run in the same order that they occur.  The Service.Listener api guarantees us only
@@ -266,7 +266,7 @@ public final class ServiceManager {
    * @param listener the listener to run when the manager changes state
    */
   public void addListener(Listener listener) {
-    state.addListener(listener, MoreExecutors.sameThreadExecutor());
+    state.addListener(listener, MoreExecutors.plainSameThreadExecutor());
   }
 
   /**
