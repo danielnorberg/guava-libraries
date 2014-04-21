@@ -19,7 +19,7 @@ package com.google.common.util.concurrent;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.util.concurrent.MoreExecutors.sameThreadExecutor;
+import static com.google.common.util.concurrent.MoreExecutors.plainSameThreadExecutor;
 import static com.google.common.util.concurrent.Uninterruptibles.getUninterruptibly;
 import static java.lang.Thread.currentThread;
 import static java.util.Arrays.asList;
@@ -348,7 +348,7 @@ public final class Futures {
    * irrelevant), consider {@linkplain #withFallback(ListenableFuture,
    * FutureFallback, Executor) supplying an executor}. If you do not supply an
    * executor, {@code withFallback} will use {@link
-   * MoreExecutors#sameThreadExecutor sameThreadExecutor}, which carries some
+   * MoreExecutors#plainSameThreadExecutor plainSameThreadExecutor}, which carries some
    * caveats for heavier operations. For example, the call to {@code
    * fallback.create} may run on an unpredictable or undesirable thread:
    *
@@ -362,7 +362,7 @@ public final class Futures {
    * </ul>
    *
    * <p>Also note that, regardless of which thread executes the {@code
-   * sameThreadExecutor} {@code fallback.create}, all other registered but
+   * plainSameThreadExecutor} {@code fallback.create}, all other registered but
    * unexecuted listeners are prevented from running during its execution, even
    * if those listeners are to run in other executors.
    *
@@ -374,7 +374,7 @@ public final class Futures {
   public static <V> ListenableFuture<V> withFallback(
       ListenableFuture<? extends V> input,
       FutureFallback<? extends V> fallback) {
-    return withFallback(input, fallback, sameThreadExecutor());
+    return withFallback(input, fallback, plainSameThreadExecutor());
   }
 
   /**
@@ -401,7 +401,7 @@ public final class Futures {
    *           // exception happens.
    *           return immediateFuture(0);
    *         }
-   *       }, sameThreadExecutor());}</pre>
+   *       }, plainSameThreadExecutor());}</pre>
    *
    * <p>The fallback can also choose to propagate the original exception when
    * desired:
@@ -419,13 +419,13 @@ public final class Futures {
    *           }
    *           return immediateFailedFuture(t);
    *         }
-   *       }, sameThreadExecutor());}</pre>
+   *       }, plainSameThreadExecutor());}</pre>
    *
    * <p>When the execution of {@code fallback.create} is fast and lightweight
    * (though the {@code Future} it returns need not meet these criteria),
    * consider {@linkplain #withFallback(ListenableFuture, FutureFallback)
    * omitting the executor} or explicitly specifying {@code
-   * sameThreadExecutor}. However, be aware of the caveats documented in the
+   * plainSameThreadExecutor}. However, be aware of the caveats documented in the
    * link above.
    *
    * @param input the primary input {@code Future}
@@ -485,7 +485,7 @@ public final class Futures {
                   setException(t);
                 }
               }
-            }, sameThreadExecutor());
+            }, plainSameThreadExecutor());
           } catch (Throwable e) {
             setException(e);
           }
@@ -526,7 +526,7 @@ public final class Futures {
    * irrelevant), consider {@linkplain #transform(ListenableFuture,
    * AsyncFunction, Executor) supplying an executor}. If you do not supply an
    * executor, {@code transform} will use {@link
-   * MoreExecutors#sameThreadExecutor sameThreadExecutor}, which carries some
+   * MoreExecutors#plainSameThreadExecutor plainSameThreadExecutor}, which carries some
    * caveats for heavier operations. For example, the call to {@code
    * function.apply} may run on an unpredictable or undesirable thread:
    *
@@ -540,7 +540,7 @@ public final class Futures {
    * </ul>
    *
    * <p>Also note that, regardless of which thread executes the {@code
-   * sameThreadExecutor} {@code function.apply}, all other registered but
+   * plainSameThreadExecutor} {@code function.apply}, all other registered but
    * unexecuted listeners are prevented from running during its execution, even
    * if those listeners are to run in other executors.
    *
@@ -560,7 +560,7 @@ public final class Futures {
    */
   public static <I, O> ListenableFuture<O> transform(ListenableFuture<I> input,
       AsyncFunction<? super I, ? extends O> function) {
-    return transform(input, function, MoreExecutors.sameThreadExecutor());
+    return transform(input, function, plainSameThreadExecutor());
   }
 
   /**
@@ -591,7 +591,7 @@ public final class Futures {
    * <p>When the execution of {@code function.apply} is fast and lightweight
    * (though the {@code Future} it returns need not meet these criteria),
    * consider {@linkplain #transform(ListenableFuture, AsyncFunction) omitting
-   * the executor} or explicitly specifying {@code sameThreadExecutor}.
+   * the executor} or explicitly specifying {@code plainSameThreadExecutor}.
    * However, be aware of the caveats documented in the link above.
    *
    * @param input The future to transform
@@ -630,7 +630,7 @@ public final class Futures {
    * <p>Note: If the transformation is slow or heavyweight, consider {@linkplain
    * #transform(ListenableFuture, Function, Executor) supplying an executor}.
    * If you do not supply an executor, {@code transform} will use {@link
-   * MoreExecutors#sameThreadExecutor sameThreadExecutor}, which carries some
+   * MoreExecutors#plainSameThreadExecutor plainSameThreadExecutor}, which carries some
    * caveats for heavier operations.  For example, the call to {@code
    * function.apply} may run on an unpredictable or undesirable thread:
    *
@@ -644,7 +644,7 @@ public final class Futures {
    * </ul>
    *
    * <p>Also note that, regardless of which thread executes the {@code
-   * sameThreadExecutor} {@code function.apply}, all other registered but
+   * plainSameThreadExecutor} {@code function.apply}, all other registered but
    * unexecuted listeners are prevented from running during its execution, even
    * if those listeners are to run in other executors.
    *
@@ -666,7 +666,7 @@ public final class Futures {
    */
   public static <I, O> ListenableFuture<O> transform(ListenableFuture<I> input,
       final Function<? super I, ? extends O> function) {
-    return transform(input, function, MoreExecutors.sameThreadExecutor());
+    return transform(input, function, plainSameThreadExecutor());
   }
 
   /**
@@ -696,7 +696,7 @@ public final class Futures {
    *
    * <p>When the transformation is fast and lightweight, consider {@linkplain
    * #transform(ListenableFuture, Function) omitting the executor} or
-   * explicitly specifying {@code sameThreadExecutor}. However, be aware of the
+   * explicitly specifying {@code plainSameThreadExecutor}. However, be aware of the
    * caveats documented in the link above.
    *
    * @param input The future to transform
@@ -887,7 +887,7 @@ public final class Futures {
                 ChainingListenableFuture.this.outputFuture = null;
               }
             }
-          }, MoreExecutors.sameThreadExecutor());
+          }, plainSameThreadExecutor());
       } catch (UndeclaredThrowableException e) {
         // Set the cause of the exception as this future's exception
         setException(e.getCause());
@@ -962,7 +962,7 @@ public final class Futures {
   public static <V> ListenableFuture<List<V>> allAsList(
       ListenableFuture<? extends V>... futures) {
     return listFuture(ImmutableList.copyOf(futures), true,
-        MoreExecutors.sameThreadExecutor());
+                      plainSameThreadExecutor());
   }
 
   /**
@@ -985,7 +985,7 @@ public final class Futures {
   public static <V> ListenableFuture<List<V>> allAsList(
       Iterable<? extends ListenableFuture<? extends V>> futures) {
     return listFuture(ImmutableList.copyOf(futures), true,
-        MoreExecutors.sameThreadExecutor());
+                      plainSameThreadExecutor());
   }
 
   /**
@@ -1022,7 +1022,7 @@ public final class Futures {
             setException(t);
           }
         }
-      }, sameThreadExecutor());
+      }, plainSameThreadExecutor());
     }
   }
 
@@ -1045,7 +1045,7 @@ public final class Futures {
   public static <V> ListenableFuture<List<V>> successfulAsList(
       ListenableFuture<? extends V>... futures) {
     return listFuture(ImmutableList.copyOf(futures), false,
-        MoreExecutors.sameThreadExecutor());
+                      plainSameThreadExecutor());
   }
 
   /**
@@ -1067,7 +1067,7 @@ public final class Futures {
   public static <V> ListenableFuture<List<V>> successfulAsList(
       Iterable<? extends ListenableFuture<? extends V>> futures) {
     return listFuture(ImmutableList.copyOf(futures), false,
-        MoreExecutors.sameThreadExecutor());
+                      plainSameThreadExecutor());
   }
 
   /**
@@ -1095,13 +1095,13 @@ public final class Futures {
     // atomically and therefore that each returned future is guaranteed to be in completion order.
     // N.B. there are some cases where the use of this executor could have possibly surprising
     // effects when input futures finish at approximately the same time _and_ the output futures
-    // have sameThreadExecutor listeners. In this situation, the listeners may end up running on a
+    // have plainSameThreadExecutor listeners. In this situation, the listeners may end up running on a
     // different thread than if they were attached to the corresponding input future.  We believe
     // this to be a negligible cost since:
-    // 1. Using the sameThreadExecutor implies that your callback is safe to run on any thread.
+    // 1. Using the plainSameThreadExecutor implies that your callback is safe to run on any thread.
     // 2. This would likely only be noticeable if you were doing something expensive or blocking on
-    //    a sameThreadExecutor listener on one of the output futures which is an antipattern anyway.
-    SerializingExecutor executor = new SerializingExecutor(MoreExecutors.sameThreadExecutor());
+    //    a plainSameThreadExecutor listener on one of the output futures which is an antipattern anyway.
+    SerializingExecutor executor = new SerializingExecutor(plainSameThreadExecutor());
     for (final ListenableFuture<? extends T> future : futures) {
       AsyncSettableFuture<T> delegate = AsyncSettableFuture.create();
       // Must make sure to add the delegate to the queue first in case the future is already done
@@ -1140,7 +1140,7 @@ public final class Futures {
    * <p>Note: If the callback is slow or heavyweight, consider {@linkplain
    * #addCallback(ListenableFuture, FutureCallback, Executor) supplying an
    * executor}. If you do not supply an executor, {@code addCallback} will use
-   * {@link MoreExecutors#sameThreadExecutor sameThreadExecutor}, which carries
+   * {@link MoreExecutors#plainSameThreadExecutor plainSameThreadExecutor}, which carries
    * some caveats for heavier operations. For example, the callback may run on
    * an unpredictable or undesirable thread:
    *
@@ -1154,7 +1154,7 @@ public final class Futures {
    * </ul>
    *
    * <p>Also note that, regardless of which thread executes the {@code
-   * sameThreadExecutor} callback, all other registered but unexecuted listeners
+   * plainSameThreadExecutor} callback, all other registered but unexecuted listeners
    * are prevented from running during its execution, even if those listeners
    * are to run in other executors.
    *
@@ -1167,7 +1167,7 @@ public final class Futures {
    */
   public static <V> void addCallback(ListenableFuture<V> future,
       FutureCallback<? super V> callback) {
-    addCallback(future, callback, MoreExecutors.sameThreadExecutor());
+    addCallback(future, callback, plainSameThreadExecutor());
   }
 
   /**
@@ -1195,7 +1195,7 @@ public final class Futures {
    *
    * <p>When the callback is fast and lightweight, consider {@linkplain
    * #addCallback(ListenableFuture, FutureCallback) omitting the executor} or
-   * explicitly specifying {@code sameThreadExecutor}. However, be aware of the
+   * explicitly specifying {@code plainSameThreadExecutor}. However, be aware of the
    * caveats documented in the link above.
    *
    * <p>For a more general interface to attach a completion listener to a
@@ -1566,7 +1566,7 @@ public final class Futures {
           // The combiner may also hold state, so free that as well
           CombinedFuture.this.combiner = null;
         }
-      }, MoreExecutors.sameThreadExecutor());
+      }, plainSameThreadExecutor());
 
       // Now begin the "real" initialization.
 

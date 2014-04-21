@@ -63,6 +63,14 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 3.0
  */
 public final class MoreExecutors {
+
+  private static final Executor PLAIN_SAME_THREAD_EXECUTOR = new Executor() {
+    @Override
+    public void execute(final Runnable command) {
+      command.run();
+    }
+  };
+
   private MoreExecutors() {}
 
   /**
@@ -266,6 +274,18 @@ public final class MoreExecutors {
    */
   public static ListeningExecutorService sameThreadExecutor() {
     return new SameThreadExecutorService();
+  }
+
+  /**
+   * Creates an executor service that runs each task in the thread that invokes
+   * {@code execute}, as in {@link CallerRunsPolicy}. This executor is cheaper
+   * than {@link #sameThreadExecutor()} as it does not need to do any locking
+   * and does not implement the {@link ExecutorService} interface.
+   *
+   * @since 18.0
+   */
+  public static Executor plainSameThreadExecutor() {
+    return PLAIN_SAME_THREAD_EXECUTOR;
   }
 
   // See sameThreadExecutor javadoc for behavioral notes.
