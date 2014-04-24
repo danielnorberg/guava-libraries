@@ -313,8 +313,7 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
   }
 
   /**
-   * Views the array as an immutable list. Copies if the specified range does not cover the complete
-   * array. Does not check for nulls.
+   * Views the array as an immutable list. Does not check for nulls; does not copy.
    */
   static <E> ImmutableList<E> asImmutableList(Object[] elements, int length) {
     switch (length) {
@@ -325,10 +324,7 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
         ImmutableList<E> list = new SingletonImmutableList<E>((E) elements[0]);
         return list;
       default:
-        if (length < elements.length) {
-          elements = arraysCopyOf(elements, length);
-        }
-        return new RegularImmutableList<E>(elements);
+        return new RegularImmutableList<E>(elements, 0, length);
     }
   }
 
@@ -697,7 +693,9 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
      * the {@code Builder}.
      */
     @Override public ImmutableList<E> build() {
-      return asImmutableList(contents, size);
+      ImmutableList<E> list = asImmutableList(contents, size);
+      this.frozen = true;
+      return list;
     }
   }
 }

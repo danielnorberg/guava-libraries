@@ -413,8 +413,7 @@ public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxveride
    * the sorted unique elements are in the first {@code k} positions of {@code contents}, and
    * {@code contents[i] == null} for {@code k <= i < n}.
    *
-   * <p>If {@code k == contents.length}, then {@code contents} may no longer be safe for
-   * modification.
+   * <p>{@code contents} is not safe for modification after this method returns.
    *
    * @throws NullPointerException if any of the first {@code n} elements of {@code contents} is
    *          null
@@ -561,6 +560,7 @@ public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxveride
       E[] contentsArray = (E[]) contents;
       ImmutableSortedSet<E> result = construct(comparator, size, contentsArray);
       this.size = result.size(); // we eliminated duplicates in-place in contentsArray
+      this.frozen = true;
       return result;
     }
   }

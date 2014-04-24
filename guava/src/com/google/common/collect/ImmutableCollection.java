@@ -316,6 +316,7 @@ public abstract class ImmutableCollection<E> extends AbstractCollection<E>
   abstract static class ArrayBasedBuilder<E> extends ImmutableCollection.Builder<E> {
     Object[] contents;
     int size;
+    boolean frozen;
     
     ArrayBasedBuilder(int initialCapacity) {
       checkNonnegative(initialCapacity, "initialCapacity");
@@ -331,6 +332,10 @@ public abstract class ImmutableCollection<E> extends AbstractCollection<E>
       if (contents.length < minCapacity) {
         this.contents = ObjectArrays.arraysCopyOf(
             this.contents, expandedCapacity(contents.length, minCapacity));
+        frozen = false;
+      } else if (frozen) {
+        contents = ObjectArrays.arraysCopyOf(contents, contents.length);
+        frozen = false;
       }
     }
 
